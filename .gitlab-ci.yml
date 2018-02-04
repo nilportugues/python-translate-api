@@ -1,0 +1,1 @@
+# stage production: set FLASK URL (modify settings.py) to api.nilportugues.com/translate/1.0/
