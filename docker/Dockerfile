@@ -1,16 +1,8 @@
-FROM ubuntu:16.04
-LABEL Description="A container for the production hosting of a flask application"
-
+FROM registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu:1.0.0
 RUN apt-get update && apt-get upgrade -y
 
 # Install nginx
 RUN apt-get install -y nginx
-
-## Python 3 installation and required packages
-RUN apt-get install libterm-readline-perl-perl apt-utils -y
-RUN apt-get install -y python3 python3-pip python3-virtualenv mlocate
-RUN pip3 install --upgrade pip
-RUN pip3 install flask uwsgi
 
 
 COPY ./translate_api-0.1.tar.gz /tmp/build.tar.gz
