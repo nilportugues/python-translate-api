@@ -1,19 +1,21 @@
-# stage production: set FLASK URL (modify settings.py) to api.nilportugues.com/translate/1.0/
 stages:
-  - build
-  - release
+    - build
+    - release
 
 variables:
-  GIT_BRANCH: $CI_COMMIT_REF_NAME
-  GIT_REPO_NAME: api.nilportugues.com/python/translate
-
+    GIT_BRANCH: $CI_COMMIT_REF_NAME
+    GIT_REPO_NAME: api.nilportugues.com/python/translate
+    DOCKER_HOST: 'tcp://localhost:2375'
+    
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
   
 latest_build:
     stage: build
     image: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu
     environment: preproduction
+    services:
+        - docker:17.09-dind
     script:
         - echo "Rename .py.prod files to .py"
         - mv ./src/translate_api/application.py.prod ./src/translate_api/application.py
@@ -32,6 +34,8 @@ api_release_build:
     stage: release
     image: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu
     environment: production
+    services:
+        - docker:17.09-dind    
     script:
         - echo "Rename .py.prod files to .py"
         - mv ./src/translate_api/application.py.prod ./src/translate_api/application.py
