@@ -1,13 +1,49 @@
 # stage production: set FLASK URL (modify settings.py) to api.nilportugues.com/translate/1.0/
 stages:
   - build
+  - release
 
-docker_image:
+variables:
+  GIT_BRANCH: $CI_COMMIT_REF_NAME
+  GIT_REPO_NAME: api.nilportugues.com/python/translate
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+  
+latest_build:
     stage: build
+    image: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu
+    environment: preproduction
+    script:
+        - echo "Rename .py.prod files to .py"
+        - mv ./src/translate_api/application.py.prod ./src/translate_api/application.py
+        - mv ./src/translate_api/settings.py.prod ./src/translate_api/settings.py
+        - echo "Run the build script"
+        - sh build.sh
+        - echo "Build the docker image..."
+        - docker build -t registry.gitlab.com/${GIT_REPO_NAME} .
+        - docker tag registry.gitlab.com/${GIT_REPO_NAME}:latest registry.gitlab.com/${GIT_REPO_NAME}:latest
+        - docker push registry.gitlab.com/${GIT_REPO_NAME}:latest
+    only:
+    - master
+
+ 
+api_release_build:
+    stage: release
     image: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu
     environment: production
     script:
         - echo "Rename .py.prod files to .py"
+        - mv ./src/translate_api/application.py.prod ./src/translate_api/application.py
+        - mv ./src/translate_api/settings.py.prod ./src/translate_api/settings.py
         - echo "Run the build script"
         - sh build.sh
         - echo "Build the docker image..."
+        - docker build -t registry.gitlab.com/${GIT_REPO_NAME} .
+        - docker tag registry.gitlab.com/${GIT_REPO_NAME}:latest registry.gitlab.com/${GIT_REPO_NAME}:${GIT_BRANCH}
+        - docker push registry.gitlab.com/${GIT_REPO_NAME}:${GIT_BRANCH}
+    only:
+        - /^(([0-9]+(\.[0-9])?(\.[0-9])?))$/  # Targets semver: X.Y.Z
+
+
+                
