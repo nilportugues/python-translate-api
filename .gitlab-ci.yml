@@ -1,1 +1,13 @@
 # stage production: set FLASK URL (modify settings.py) to api.nilportugues.com/translate/1.0/
+stage:
+  - build
+
+docker_image:
+  stage: build
+  environment:
+    - production
+  script:
+    - echo 'Rename .py.prod files to .py'
+    - echo 'Run the build script'
+    - sh build.sh
+    - echo 'Build the docker image...'
