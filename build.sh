@@ -1,5 +1,7 @@
+#!/bin/bash
+
 # Generate release tarball
-cd src/
+cd ./src/
 python3 setup.py sdist
 cd ..
 
