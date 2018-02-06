@@ -3,11 +3,11 @@ stage:
   - build
 
 docker_image:
-  stage: build
-  environment:
-    - production
-  script:
-    - echo 'Rename .py.prod files to .py'
-    - echo 'Run the build script'
-    - sh build.sh
-    - echo 'Build the docker image...'
+    stage: build
+    environment:
+        - production
+    script:
+        - echo 'Rename .py.prod files to .py'
+        - echo 'Run the build script'
+        - sh build.sh
+        - echo 'Build the docker image...'
