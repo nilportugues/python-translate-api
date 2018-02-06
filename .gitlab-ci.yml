@@ -16,7 +16,6 @@ before_script:
   
 latest_build:
     stage: build
-    image: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu
     environment: preproduction
     script:
         - echo "Rename .py.prod files to .py"
