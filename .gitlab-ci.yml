@@ -1,3 +1,6 @@
+services:
+    - docker:dind
+    
 stages:
     - build
     - release
@@ -14,14 +17,12 @@ latest_build:
     stage: build
     image: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu
     environment: preproduction
-    services:
-        - docker:dind
     script:
         - echo "Rename .py.prod files to .py"
         - mv ./src/translate_api/application.py.prod ./src/translate_api/application.py
         - mv ./src/translate_api/settings.py.prod ./src/translate_api/settings.py
         - echo "Run the build script"
-        - sh build.sh
+        - docker exec -it -v "($pwd):/app" registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu bash /app/build.sh
         - echo "Build the docker image..."
         - docker build -t registry.gitlab.com/${GIT_REPO_NAME} .
         - docker tag registry.gitlab.com/${GIT_REPO_NAME}:latest registry.gitlab.com/${GIT_REPO_NAME}:latest
