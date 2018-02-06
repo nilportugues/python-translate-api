@@ -1,13 +1,15 @@
 image: docker:git
-    
-stages:
-    - build
-    - release
+
+services:
+    - docker:dind
 
 variables:
     GIT_BRANCH: $CI_COMMIT_REF_NAME
     GIT_REPO_NAME: api.nilportugues.com/python/translate
-    DOCKER_HOST: 'tcp://localhost:2375'
+
+stages:
+    - build
+    - release
     
 before_script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
