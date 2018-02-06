@@ -1,9 +1,10 @@
 # stage production: set FLASK URL (modify settings.py) to api.nilportugues.com/translate/1.0/
-stage:
+stages:
   - build
 
 docker_image:
     stage: build
+    image: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu
     environment:
         - production
     script:
