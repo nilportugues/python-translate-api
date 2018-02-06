@@ -1,6 +1,6 @@
 # Generate release tarball
 cd src/
-python setup.py sdist
+python3 setup.py sdist
 cd ..
 
 # save somewhere the build at: 
