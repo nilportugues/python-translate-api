@@ -5,10 +5,10 @@ stages:
 docker_image:
     stage: build
     image: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu
-    environment:
-        - production
+#    environment:
+#        - production
     script:
-        - echo 'Rename .py.prod files to .py'
-        - echo 'Run the build script'
+        - echo "Rename .py.prod files to .py"
+        - echo "Run the build script"
         - sh build.sh
-        - echo 'Build the docker image...'
+        - echo "Build the docker image..."
