@@ -1,5 +1,5 @@
 #!/bin/bash
-CWD=`$(pwd)`
+CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Generate release tarball
 cd $CWD/src/
