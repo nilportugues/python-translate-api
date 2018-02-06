@@ -15,7 +15,7 @@ latest_build:
     image: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu
     environment: preproduction
     services:
-        - docker:17.09-dind
+        - docker:dind
     script:
         - echo "Rename .py.prod files to .py"
         - mv ./src/translate_api/application.py.prod ./src/translate_api/application.py
@@ -35,7 +35,7 @@ api_release_build:
     image: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu
     environment: production
     services:
-        - docker:17.09-dind    
+        - docker:dind   
     script:
         - echo "Rename .py.prod files to .py"
         - mv ./src/translate_api/application.py.prod ./src/translate_api/application.py
