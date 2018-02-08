@@ -69,14 +69,14 @@ Finally use the docker container.
 
 ## 2.1 Documentation: 
 
- - **Swagger UI**: http://127.0.0.1:9001/ (dev only)
- - **Swagger.json**: http://127.0.0.1:9001/swagger.json
+ - **Swagger UI**: http://127.0.0.1:8080/ (dev only)
+ - **Swagger.json**: http://127.0.0.1:8080/swagger.json
  
 ## 2.2 Methods
 
- - [GET] http://127.0.0.1:9001/text/languages
- - [POST] http://127.0.0.1:9001/text/detect
- - [POST] http://127.0.0.1:9001/text/translate
+ - [GET] http://127.0.0.1:8080/text/languages
+ - [POST] http://127.0.0.1:8080/text/detect
+ - [POST] http://127.0.0.1:8080/text/translate
  
 # 3. Framework:
 
