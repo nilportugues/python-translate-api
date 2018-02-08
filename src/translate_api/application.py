@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 # ----------------------------------------------------------------------------
 
-blueprint = Blueprint('api', __name__, url_prefix='/api')
+blueprint = Blueprint('api', __name__)
 api.init_app(blueprint)
 
 # ADD ENDPOINTS
