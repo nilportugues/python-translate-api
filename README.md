@@ -3,7 +3,11 @@
 Hook it to a running nginx: 
 
 ````
-docker run --network=nginx_net --name=api.translate registry.gitlab.com/api.nilportugues.com/python/translate
+docker run \
+    --network=nginx_nginx_net \
+    --name=api.translate \
+    -p 8080:80 \
+    registry.gitlab.com/api.nilportugues.com/python/translate
 ```
  
  
@@ -65,14 +69,14 @@ Finally use the docker container.
 
 ## 2.1 Documentation: 
 
- - **Swagger UI**: http://127.0.0.1:9001/api/ (dev only)
- - **Swagger.json**: http://127.0.0.1:9001/api/swagger.json
+ - **Swagger UI**: http://127.0.0.1:9001/ (dev only)
+ - **Swagger.json**: http://127.0.0.1:9001/swagger.json
  
 ## 2.2 Methods
 
- - [GET] http://127.0.0.1:9001/api/text/languages
- - [POST] http://127.0.0.1:9001/api/text/detect
- - [POST] http://127.0.0.1:9001/api/text/translate
+ - [GET] http://127.0.0.1:9001/text/languages
+ - [POST] http://127.0.0.1:9001/text/detect
+ - [POST] http://127.0.0.1:9001/text/translate
  
 # 3. Framework:
 
