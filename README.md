@@ -1,5 +1,12 @@
 # 1. Installation and running
  
+Hook it to a running nginx: 
+
+````
+docker run --network=nginx_net --name=api.translate registry.gitlab.com/api.nilportugues.com/python/translate
+```
+ 
+ 
 ## 1.1. Development
 
 Meet the requirements: 
