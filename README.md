@@ -1,7 +1,5 @@
 # 1. Installation and running
  
-Hook it to a running nginx: 
-
 ````
 docker run \
     --network=nginx_nginx_net \
