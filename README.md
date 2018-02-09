@@ -6,7 +6,10 @@ Hook it to a running nginx:
 docker run \
     --network=nginx_nginx_net \
     --name=api.translate \
-    -p 8080:80 \
+    -–expose 8080:80 \
+    --label "traefik.enable=true"
+    --label "traefik.backend=api.translate"
+    --label "traefik.frontend.rule=Host:translate.api.nilportugues.com"
     registry.gitlab.com/api.nilportugues.com/python/translate
 ```
  
