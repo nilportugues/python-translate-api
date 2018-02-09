@@ -3,10 +3,10 @@
 ````
 docker run \
     --network=nginx_nginx_net \
-    --name=api.translate \
+    --name=translate.api \
     -–expose 8080:80 \
     --label "traefik.enable=true" \
-    --label "traefik.backend=api.translate" \
+    --label "traefik.backend=translate.api" \
     --label "traefik.frontend.rule=Host:translate.api.nilportugues.com" \
     registry.gitlab.com/api.nilportugues.com/python/translate
 ```
