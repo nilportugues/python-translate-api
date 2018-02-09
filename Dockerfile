@@ -6,6 +6,8 @@ RUN echo 'deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx' >>  /
 
 RUN apt-get update -y && apt-get upgrade -y 
 RUN apt-get install -y --allow-unauthenticated nginx nano curl 
+COPY ./docker/nginx/nginx.conf /etc/nginx/nginx.conf
+
 
 COPY ./docker/translate_api-0.1.tar.gz /tmp/build.tar.gz
 RUN pip3 install /tmp/build.tar.gz --upgrade
