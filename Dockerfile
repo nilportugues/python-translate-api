@@ -17,7 +17,7 @@ COPY ./docker/uwsgi/app.wsgi /var/www/app.wsgi
  RUN rm /etc/nginx/sites-enabled/default
 
 # Exposed ports
-EXPOSE 5000 80
+EXPOSE 80
 
 ## Copy over the entrypoint
 COPY ./docker/entrypoint.sh /usr/bin/entrypoint.sh
