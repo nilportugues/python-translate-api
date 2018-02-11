@@ -6,15 +6,23 @@ services:
 variables:
     GIT_BRANCH: $CI_COMMIT_REF_NAME
     GIT_REPO_NAME: api.nilportugues.com/python/translate
+    DOCKER_IMAGE: registry.gitlab.com/api.nilportugues.com/python/translate  
     PYTHON_IMAGE: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu:1.0.0
+    SSH_DOCKER_IMAGE: registry.gitlab.com/ci.docker.nilportugues.com/ssh-credentials:1.0.0
+
 stages:
     - build
     - release
     
 before_script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+
+
+## ----------------------------------------------------------------------------------------
+## BUILD
+## ----------------------------------------------------------------------------------------
   
-latest_build:
+preprod_build:
     stage: build
     environment: preproduction
     script:
@@ -30,4 +38,37 @@ latest_build:
     only:
     - master
 
-                
+  
+production_build:
+    stage: build
+    environment: production
+    script:
+        - echo "Rename .py.prod files to .py"
+        - mv ./src/translate_api/application.py.prod ./src/translate_api/application.py
+        - mv ./src/translate_api/settings.py.prod ./src/translate_api/settings.py
+        - echo "Run the build script"
+        - docker run -v "$(pwd)/:/app/" -i ${PYTHON_IMAGE} /bin/bash /app/build.sh
+        - echo "Build the docker image..."
+        - docker build -t registry.gitlab.com/${GIT_REPO_NAME} .
+        - docker tag registry.gitlab.com/${GIT_REPO_NAME}:${GIT_BRANCH} registry.gitlab.com/${GIT_REPO_NAME}:${GIT_BRANCH}
+        - docker push registry.gitlab.com/${GIT_REPO_NAME}:${GIT_BRANCH}
+    only:
+       - /^(([0-9]+(\.[0-9])?(\.[0-9])?))$/  # Targets semver: X.Y.Z
+
+## ----------------------------------------------------------------------------------------
+## DEPLOY TO PRODUCTION
+## ----------------------------------------------------------------------------------------
+
+deploy_to_prod:
+  stage: deploy
+  environment: production
+  image: ${SSH_DOCKER_IMAGE}
+  script: 
+    - echo 'Adding new release to the load balancer ...'
+    - ssh -q root@nilportugues.com "docker run --network=traefik_default --label 'traefik.enable=true' --label 'traefik.backend=translate.api.nilportugues.com'  --label 'traefik.frontend.rule=Host:translate.api.nilportugues.com' -d ${DOCKER_IMAGE}:${GIT_BRANCH}"
+    - echo 'Removing older images from the load balancer ...'
+    - ssh -q root@nilportugues.com "docker stop \$(docker ps | grep ${DOCKER_IMAGE} | grep -v '${GIT_BRANCH}' | awk '{print $1}') || true"
+    - echo 'Release OK!'
+  only:
+    - /^(([0-9]+(\.[0-9])?(\.[0-9])?))$/  # Targets semver: X.Y.Z
+
