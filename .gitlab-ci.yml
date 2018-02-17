@@ -56,20 +56,22 @@ production_build:
     only:
        - /^(([0-9]+(\.[0-9])?(\.[0-9])?))$/  # Targets semver: X.Y.Z
 
-## ----------------------------------------------------------------------------------------
-## DEPLOY TO PRODUCTION
-## ----------------------------------------------------------------------------------------
-
 deploy_to_prod:
   stage: deploy
   environment: production
   image: ${SSH_DOCKER_IMAGE}
   script: 
-    - echo 'Adding new release to the load balancer ...'
-    - ssh -q root@nilportugues.com "docker run --network=traefik_default --label 'traefik.enable=true' --label 'traefik.backend=translate.api.nilportugues.com'  --label 'traefik.frontend.rule=Host:translate.api.nilportugues.com' -d ${DOCKER_IMAGE}:${GIT_BRANCH}"
-    - echo 'Removing older images from the load balancer ...'
-    - ssh -q root@nilportugues.com "docker stop \$(docker ps | grep ${DOCKER_IMAGE} | grep -v '${GIT_BRANCH}' | awk '{print $1}') || true"
+    - echo 'Preparing docker-compose.yml ...'
+    - DOCKER_IMAGE_ESCAPED=${DOCKER_IMAGE//\//\\/}
+    - sed -e "s/\${DOCKER_IMAGE}/${DOCKER_IMAGE_ESCAPED}/g" -e "s/\${GIT_BRANCH}/${GIT_BRANCH}/g" docker-compose.yml.tpl > translate.api.nilportugues.com.yml
+    - echo 'Copying docker-compose.yml ...'
+    - scp ./translate.api.nilportugues.com.yml root@nilportugues.com:/tmp/
+    - echo 'Running docker swarm ...'
+    - ssh -q root@nilportugues.com "docker pull ${DOCKER_IMAGE}:${GIT_BRANCH} && docker stack deploy -c /tmp/translate.api.nilportugues.com.yml up"
+    - echo 'Removing docker-compose.yml ...'
+    - ssh -q root@nilportugues.com "rm /tmp/translate.api.nilportugues.com.yml"
     - echo 'Release OK!'
   only:
     - /^(([0-9]+(\.[0-9])?(\.[0-9])?))$/  # Targets semver: X.Y.Z
+
 
