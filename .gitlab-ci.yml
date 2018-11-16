@@ -5,11 +5,11 @@ services:
 
 variables:
     GIT_BRANCH: $CI_COMMIT_REF_NAME
-    GIT_REPO_NAME: api.nilportugues.com/python/translate
-    DOCKER_IMAGE: registry.gitlab.com/api.nilportugues.com/python/translate  
+    GIT_REPO_NAME: api.nilportugues.com/internal/text-translate/translate-api
+    DOCKER_IMAGE: registry.gitlab.com/api.nilportugues.com/internal/text-translate/translate-api
     PYTHON_IMAGE: registry.gitlab.com/registry.docker.nilportugues.com/python3-ubuntu:1.0.0
     SSH_DOCKER_IMAGE: registry.gitlab.com/ci.docker.nilportugues.com/ssh-credentials:1.0.0
-
+    SERVER_NAME: "195.201.23.98"
 stages:
     - build
     - release
@@ -65,11 +65,11 @@ deploy_to_prod:
     - DOCKER_IMAGE_ESCAPED=${DOCKER_IMAGE//\//\\/}
     - sed -e "s/\${DOCKER_IMAGE}/${DOCKER_IMAGE_ESCAPED}/g" -e "s/\${GIT_BRANCH}/${GIT_BRANCH}/g" docker-compose.yml.tpl > translate.api.nilportugues.com.yml
     - echo 'Copying docker-compose.yml ...'
-    - scp ./translate.api.nilportugues.com.yml root@nilportugues.com:/tmp/
+    - scp ./translate.api.nilportugues.com.yml root@${SERVER_NAME}:/tmp/
     - echo 'Running docker swarm ...'
-    - ssh -q root@nilportugues.com "docker pull ${DOCKER_IMAGE}:${GIT_BRANCH} && docker stack deploy -c /tmp/translate.api.nilportugues.com.yml up"
+    - ssh -q root@${SERVER_NAME} "docker pull ${DOCKER_IMAGE}:${GIT_BRANCH} && docker stack deploy -c /tmp/translate.api.nilportugues.com.yml up"
     - echo 'Removing docker-compose.yml ...'
-    - ssh -q root@nilportugues.com "rm /tmp/translate.api.nilportugues.com.yml"
+    - ssh -q root@${SERVER_NAME} "rm /tmp/translate.api.nilportugues.com.yml"
     - echo 'Release OK!'
   only:
     - /^(([0-9]+(\.[0-9])?(\.[0-9])?))$/  # Targets semver: X.Y.Z
