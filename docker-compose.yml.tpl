@@ -12,26 +12,27 @@ version: '3.2'
 services:
    translate_api_nilportugues_com:
       image: ${DOCKER_IMAGE}:${GIT_BRANCH}
-      labels:
-          traefik.enable: "true"
-          traefik.port: 80
-          traefik.docker.network: "up_traefik_default"
-          traefik.backend: "translate.api.nilportugues.com"
-          traefik.frontend.rule: "Host:translate.api.nilportugues.com"
-      networks:
-         shared_services:
-            aliases:
-              - translate.api.nilportugues.com
-         traefik_default:
-            aliases:
-              - translate.api.nilportugues.com
+      ports: 
+        - 80:80
+#      labels:
+#          traefik.enable: "true"
+#          traefik.port: 80
+#          traefik.docker.network: "up_traefik_default"
+#          traefik.backend: "translate.api.nilportugues.com"
+#          traefik.frontend.rule: "Host:translate.api.nilportugues.com"
+#      networks:
+#         shared_services:
+#            aliases:
+#              - translate.api.nilportugues.com
+#         traefik_default:
+#            aliases:
+#              - translate.api.nilportugues.com
 
 
-networks:
-  shared_services:
-    external:
-      name: up_shared_services
-
-  traefik_default:
-    external:
-      name: up_traefik_default
+#networks:
+#  shared_services:
+#    external:
+#      name: up_shared_services
+#  traefik_default:
+#    external:
+#      name: up_traefik_default
