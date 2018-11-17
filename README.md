@@ -20,7 +20,7 @@ docker run \
 Meet the requirements: 
 
 ```bash
-sudo apt-get install -y python python-pip python-virtualenv 
+sudo apt-get install -y python python-pip python3-venv
 ```
 
 Run the following script to get you started in no time:
