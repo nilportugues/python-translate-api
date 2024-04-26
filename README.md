@@ -1,5 +1,3 @@
-# 1. Installation and running
- 
 ````
 # Production run
 
